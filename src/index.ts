@@ -7,9 +7,23 @@ import { RegisterRoutes } from "@tsoa/routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerDoc from "@tsoa/swagger.json";
 
+import mongoose from 'mongoose';
+
 const main = async () => {
   const app: Application = express();
   const port = process.env.PORT || 3000;
+
+  const dbUsername =  process.env.DB_ADMIN_USERNAME;
+  const dbPassword = process.env.DB_ADMIN_PASSWORD;
+
+  const uri = `mongodb://${dbUsername}:${dbPassword}@localhost:27017/drawdojo?authSource=admin`;
+
+  mongoose.connect(uri);
+
+  mongoose.connection.on('open', () => {console.log('Connected to mongo server.');});
+
+  // TODO - Swap console.error for some proper logging
+  mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
   app.set("etag", false);
   app.use(nocache());
