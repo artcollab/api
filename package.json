@@ -47,7 +47,6 @@
     "@nestjs/swagger": "^5.1.5",
     "bcrypt": "^5.0.1",
     "express-jwt": "^6.1.0",
-    "jest": "^27.4.5",
     "mongoose": "^6.1.4",
     "morgan": "^1.10.0"
   }
