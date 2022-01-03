@@ -33,13 +33,13 @@ const main = async () => {
   app.use(morgan("tiny"));
   app.use(express.urlencoded());
 
-  RegisterRoutes(app);
+RegisterRoutes(app);
 
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-  app.listen(port, () => {
-    console.log(`listening on port ${port}`);
-  });
-};
+app.listen(port, () => {
+  // eslint-disable-next-line no-console
+  console.log(`listening on port ${port}`);
+});
 
-main();
+export default app;
