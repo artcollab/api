@@ -15,8 +15,10 @@ const main = async () => {
 
   const dbUsername =  process.env.DB_ADMIN_USERNAME;
   const dbPassword = process.env.DB_ADMIN_PASSWORD;
+  const dbURI = process.env.DB_URI;
+  const dbPort = process.env.DB_PORT;
 
-  const uri = `mongodb://${dbUsername}:${dbPassword}@localhost:27017/drawdojo?authSource=admin`;
+  const uri = `mongodb://${dbUsername}:${dbPassword}@${dbURI}:${dbPort}/drawdojo?authSource=admin`;
 
   mongoose.connect(uri);
 
