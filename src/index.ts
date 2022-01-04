@@ -9,37 +9,36 @@ import swaggerDoc from "@tsoa/swagger.json";
 
 import mongoose from 'mongoose';
 
-const main = async () => {
-  const app: Application = express();
-  const port = process.env.PORT || 3000;
+const app: Application = express();
+const port = process.env.PORT || 3000;
 
-  const dbUsername =  process.env.DB_ADMIN_USERNAME;
-  const dbPassword = process.env.DB_ADMIN_PASSWORD;
-  const dbURI = process.env.DB_URI;
-  const dbPort = process.env.DB_PORT;
+const dbUsername =  process.env.DB_ADMIN_USERNAME;
+const dbPassword = process.env.DB_ADMIN_PASSWORD;
+const dbURI = process.env.DB_URI;
+const dbPort = process.env.DB_PORT;
 
-  const uri = `mongodb://${dbUsername}:${dbPassword}@${dbURI}:${dbPort}/drawdojo?authSource=admin`;
+const uri = `mongodb://${dbUsername}:${dbPassword}@${dbURI}:${dbPort}/drawdojo?authSource=admin`;
 
-  mongoose.connect(uri);
+mongoose.connect(uri);
 
-  mongoose.connection.on('open', () => {console.log('Connected to mongo server.');});
+mongoose.connection.on('open', () => {console.log('Connected to mongo server.');});
 
-  // TODO - Swap console.error for some proper logging
-  mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// TODO - Swap console.error for some proper logging
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-  app.set("etag", false);
-  app.use(nocache());
-  app.use(express.json());
-  app.use(morgan("tiny"));
-  app.use(express.urlencoded());
+app.set("etag", false);
+app.use(nocache());
+app.use(express.json());
+app.use(morgan("tiny"));
+app.use(express.urlencoded());
 
-  RegisterRoutes(app);
+RegisterRoutes(app);
 
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-  app.listen(port, () => {
-    console.log(`listening on port ${port}`);
-  });
-};
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+});
 
-main();
+
+export default app;
