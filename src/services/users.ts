@@ -4,7 +4,8 @@ import UserModel, { User } from "@models/user";
 export type UserCreationParams = Pick<User, "email" | "name" | "phoneNumbers">;
 
 export class UsersService {
-  public async get(id: number, name?: string): Promise<User> {
+  // Get uses based on ID.
+  public async get(id: number): Promise<User> {
     
     // Need to validate the user given id to prevent spooky stuff
 
@@ -21,6 +22,8 @@ export class UsersService {
     });
 
   }
+
+  // TODO - Add route for getting used based on name
 
   public create(userCreationParams: UserCreationParams): User {
     return {
