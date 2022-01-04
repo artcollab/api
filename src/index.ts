@@ -21,9 +21,11 @@ const uri = `mongodb://${dbUsername}:${dbPassword}@${dbURI}:${dbPort}/drawdojo?a
 
 mongoose.connect(uri);
 
+// eslint-disable-next-line no-console
 mongoose.connection.on('open', () => {console.log('Connected to mongo server.');});
 
 // TODO - Swap console.error for some proper logging
+// eslint-disable-next-line no-console
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.set("etag", false);
