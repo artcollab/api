@@ -1,5 +1,5 @@
 import { model } from "mongoose";
-import UserSchema from "../schemas/users"
+import UserSchema from "@schemas/users";
 
 export interface User {
   id: number;

@@ -1,5 +1,4 @@
-import { User } from "@models/user";
-import UserModel from "@models/user"
+import UserModel, { User } from "@models/user";
 
 // A post request should not contain an id.
 export type UserCreationParams = Pick<User, "email" | "name" | "phoneNumbers">;
