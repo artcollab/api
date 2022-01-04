@@ -5,7 +5,7 @@ export type UserCreationParams = Pick<User, "email" | "name" | "phoneNumbers">;
 
 export class UsersService {
   // Get uses based on ID.
-  public async get(id: number): Promise<User> {
+  public async getByID(id: number): Promise<User> {
     
     // Need to validate the user given id to prevent spooky stuff
 
@@ -23,7 +23,37 @@ export class UsersService {
 
   }
 
-  // TODO - Add route for getting used based on name
+  public async getByName(name: string): Promise<User> {
+    
+    // Need to validate the user given username to prevent spooky stuff
+
+    // Need to do some TypeScript stuff to make this proper
+    return await UserModel.findOne({"name": name}).then((data) => {
+        
+      // Need to do some validation first
+      
+      return data as User;
+
+    })
+    .catch((error: Error) => {
+      throw error;
+    });
+
+  }
+
+  public async getAllUsers(): Promise<User[]> {
+
+    // Need to do some TypeScript stuff to make this proper
+    return await UserModel.find().then((data) => {
+
+      return data as User[];
+
+    })
+    .catch((error: Error) => {
+      throw error;
+    });
+
+  }
 
   public create(userCreationParams: UserCreationParams): User {
     return {
