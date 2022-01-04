@@ -37,8 +37,10 @@ RegisterRoutes(app);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`listening on port ${port}`);
 });
 
+export default app;
 
 export default app;
