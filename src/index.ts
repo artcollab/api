@@ -37,6 +37,8 @@ app.use(express.urlencoded());
 
 RegisterRoutes(app);
 
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
 app.use(function errorHandler(
   err: unknown,
   req: ExRequest,
@@ -64,9 +66,6 @@ app.use(function notFoundHandler(_req, res: ExResponse) {
     message: "Not Found",
   });
 });
-
-
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
