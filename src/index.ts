@@ -11,6 +11,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerDoc from "@tsoa/swagger.json";
 
 import mongoose from "mongoose";
+import { ApiError } from "@controller/users.controller";
 
 const app: Application = express();
 const port = process.env.PORT;
@@ -23,7 +24,6 @@ const db: { [key: string]: string } = {
 };
 
 const uri = `mongodb://${db.username}:${db.password}@${db.uri}:${db.port}/drawdojo?authSource=admin`;
-console.log(db);
 mongoose.connect(uri);
 
 // eslint-disable-next-line no-console
@@ -54,6 +54,14 @@ app.use(function errorHandler(
   res: ExResponse,
   next: NextFunction
 ): ExResponse | void {
+  if (err instanceof ApiError) {
+    console.log("Handle this without crashing pls");
+    const status = err.getStatusCode();
+    const message = err.getMessage();
+    return res.status(status).json({
+      message: message
+    });
+  }
   if (err instanceof ValidateError) {
     console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
     return res.status(422).json({

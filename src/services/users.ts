@@ -1,4 +1,8 @@
 import UserModel, { User } from "@models/user";
+import { emailRegexp } from '@util/regex';
+// import { ValidateError } from "tsoa";
+
+import { ApiError } from "@controller/users.controller";
 
 // A post request should not contain an id.
 export type UserCreationParams = Pick<User, "email" | "name" | "phoneNumbers">;
@@ -55,10 +59,45 @@ export class UsersService {
 
   }
 
-  public create(userCreationParams: UserCreationParams): User {
-    return {
+  public create(userCreationParams: UserCreationParams) {
+
+    // This one works
+    if (!emailRegexp.test(userCreationParams.email))
+      throw new ApiError("Validation error", 400, "Email is invalid");
+
+    const newUser = new UserModel({
       id: Math.floor(Math.random() * 10000), // Random
-      ...userCreationParams
-    };
+      name: userCreationParams.name,
+      email: userCreationParams.email,
+      phoneNumbers: userCreationParams.phoneNumbers
+    });
+
+    UserModel.findOne({"email": newUser.email}).then((data) => {
+      
+      if (data) {
+
+        // This one doesn't work
+        throw new ApiError("Not unique",  409, "Email is already in use");
+
+      } else {
+
+        newUser.save().then(() => {
+
+          return newUser;
+    
+        })
+        .catch((error: Error) => {
+          throw error;
+        });
+
+      }
+
+    });
+
+    //  This is wrong, we need to return some kind of error
+    //  Which is tricky if the function is expecting type User
+    return newUser;
+
   }
+
 }
