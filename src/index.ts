@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
-import express, { Application, Response as ExResponse, Request as ExRequest, NextFunction, } from "express";
+import express, {
+  Application,
+  Response as ExResponse,
+  Request as ExRequest,
+  NextFunction,
+} from "express";
 
 import morgan from "morgan";
 import nocache from "nocache";
@@ -55,11 +60,10 @@ app.use(function errorHandler(
   next: NextFunction
 ): ExResponse | void {
   if (err instanceof ApiError) {
-    console.log("Handle this without crashing pls");
     const status = err.getStatusCode();
     const message = err.getMessage();
     return res.status(status).json({
-      message: message
+      message: message,
     });
   }
   if (err instanceof ValidateError) {
