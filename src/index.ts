@@ -9,11 +9,11 @@ import express, {
 import morgan from "morgan";
 import nocache from "nocache";
 
-import { RegisterRoutes } from "@tsoa/routes";
-import { ValidateError } from "tsoa";
-
+import swaggerDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import swaggerDoc from "@tsoa/swagger.json";
+
+import index from "@controller";
+// import eJwt from "express-jwt";
 
 import mongoose from "mongoose";
 import { ApiError } from "@controller/users.controller";
@@ -49,44 +49,39 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(express.urlencoded());
 
-RegisterRoutes(app);
+// app.use(
+//   eJwt({
+//     secret: process.env.SEED as string,
+//     algorithms: ["HS256"],
+//   }).unless({
+//     path: ["/auth/login", "/auth/register", "/auth/refresh", "/docs", "/"],
+//   })
+// );
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.get("/", index);
 
-app.use(function errorHandler(
-  err: unknown,
-  req: ExRequest,
-  res: ExResponse,
-  next: NextFunction
-): ExResponse | void {
-  if (err instanceof ApiError) {
-    const status = err.getStatusCode();
-    const message = err.getMessage();
-    return res.status(status).json({
-      message: message,
-    });
-  }
-  if (err instanceof ValidateError) {
-    console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
-    return res.status(422).json({
-      message: "Validation Failed",
-      details: err?.fields,
-    });
-  }
-  if (err instanceof Error) {
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
-  }
-
-  next();
-});
-
-app.use(function notFoundHandler(_req, res: ExResponse) {
-  res.status(404).send({
-    message: "Not Found",
-  });
-});
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(
+    swaggerDoc({
+      definition: {
+        openapi: "3.0.0",
+        info: {
+          title: "Drawdojo",
+          version: "0.0.1",
+        },
+      },
+      apis: ["./src/controller/**/*.ts", "./src/schemas/**/*.ts"],
+      servers: [
+        {
+          url: "https://api.operce.net/",
+          description: "Main server",
+        },
+      ],
+    })
+  )
+);
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
