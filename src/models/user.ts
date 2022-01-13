@@ -2,15 +2,12 @@ import { model } from "mongoose";
 import UserSchema from "@schemas/users";
 
 export interface User {
-  id: string;
-  username: string;
+  id: number;
   email: string;
   name: string;
-  surname: string;
-  password: string;
-  following?: [string];
+  phoneNumbers: string[];
 }
 
-const UserModel = model<User>("users", UserSchema);
+const UserModel =  model<User>('users', UserSchema);
 
 export default UserModel;

@@ -6,7 +6,6 @@ import swaggerDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
 import index from "@controller";
-// import eJwt from "express-jwt";
 
 import mongoose from "mongoose";
 
@@ -42,15 +41,6 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(express.urlencoded());
 
-// app.use(
-//   eJwt({
-//     secret: process.env.SEED as string,
-//     algorithms: ["HS256"],
-//   }).unless({
-//     path: ["/auth/login", "/auth/register", "/auth/refresh", "/docs", "/"],
-//   })
-// );
-
 app.get("/", index);
 
 app.use(
@@ -61,17 +51,11 @@ app.use(
       definition: {
         openapi: "3.0.0",
         info: {
-          title: "Drawdojo",
-          version: "0.0.1",
+          title: "Hello World",
+          version: "1.0.0",
         },
       },
-      apis: ["./src/controller/**/*.ts", "./src/schemas/**/*.ts"],
-      servers: [
-        {
-          url: "https://api.operce.net/",
-          description: "Main server",
-        },
-      ],
+      apis: ["./src/controller/*.ts"], // files containing annotations as above
     })
   )
 );
