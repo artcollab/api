@@ -28,6 +28,9 @@ jobs:
       - name: Ping mongo
         run: docker exec api_web_1 ping -c 5 db
 
+      - name: Node print env vars
+        run: docker exec api_web_1 printenv
+
       - name: Mongo print env vars
         run: docker exec api_db_1 printenv
 
