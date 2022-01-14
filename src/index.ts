@@ -22,21 +22,18 @@ const db: { [key: string]: string } = {
   port: process.env.DB_PORT as string,
 };
 
-const uri = `mongodb://${db.username}:${db.password}@${db.uri}:${db.port}/drawdojo?authSource=admin`;
-console.log(db);
-mongoose.connect(uri);
+const connectDB = async () => {
+  const uri = `mongodb://${db.username}:${db.password}@${db.uri}:${db.port}/drawdojo?authSource=admin`;
+  try {
+    console.log(db);
+    await mongoose.connect(uri);
 
-// eslint-disable-next-line no-console
-mongoose.connection.on("open", () => {
-  console.log("Connected to mongo server.");
-});
-
-// TODO - Swap console.error for some proper logging
-// eslint-disable-next-line no-console
-mongoose.connection.on(
-  "error",
-  console.error.bind(console, "MongoDB connection error:")
-);
+    console.log("Connected to mongoDB.");
+  } catch (err) {
+    console.log("Failed to connect to MongoDB", err);
+  }
+};
+connectDB();
 
 app.set("etag", false);
 app.use(nocache());
