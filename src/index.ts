@@ -1,37 +1,23 @@
 import express, { Application } from "express";
-import morgan from "morgan";
+import eJwt from "express-jwt";
 import nocache from "nocache";
+import morgan from "morgan";
 
-import swaggerDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import swaggerDoc from "swagger-jsdoc";
+import doc from "@doc";
 
 import index from "@controller";
-import eJwt from "express-jwt";
-
-import mongoose from "mongoose";
-
 import { login } from "@auth";
 
-const app: Application = express();
-const port = process.env.PORT;
+import db from "@db";
 
-const db: { [key: string]: string } = {
-  username: process.env.DB_ADMIN_USERNAME as string,
-  password: process.env.DB_ADMIN_PASSWORD as string,
-  uri: process.env.DB_URI as string,
-  port: process.env.DB_PORT as string,
-};
+const app: Application = express();
 
 const main = async () => {
-  const uri = `mongodb://${db.username}:${db.password}@${db.uri}:${db.port}/drawdojo?authSource=admin`;
-  await mongoose.connect(uri).then(
-    () => {
-      console.log("Connected to mongo.");
-    },
-    (err) => {
-      throw err;
-    }
-  );
+  const port = process.env.PORT;
+
+  db();
 
   app.set("etag", false);
   app.use(nocache());
@@ -39,28 +25,7 @@ const main = async () => {
   app.use(morgan("tiny"));
   app.use(express.urlencoded());
 
-  app.use(
-    "/docs",
-    swaggerUi.serve,
-    swaggerUi.setup(
-      swaggerDoc({
-        definition: {
-          openapi: "3.0.0",
-          info: {
-            title: "Drawdojo",
-            version: "0.0.1",
-          },
-        },
-        apis: ["./src/controller/**/*.ts", "./src/schemas/**/*.ts"],
-        servers: [
-          {
-            url: "https://api.operce.net/",
-            description: "Main server",
-          },
-        ],
-      })
-    )
-  );
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc(doc)));
 
   app.use(
     eJwt({
