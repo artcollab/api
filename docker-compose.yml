@@ -16,6 +16,7 @@ services:
       - mongo.env
     ports:
       - "27017:27017"
+    command: mongod --bind_ip 0.0.0.0
     healthcheck:
       test: ["CMD-SHELL", "mongo"]
       interval: 10s
