@@ -22,7 +22,7 @@ const db: { [key: string]: string } = {
   port: process.env.DB_PORT as string,
 };
 
-const connectDB = async () => {
+const main = async () => {
   const uri = `mongodb://${db.username}:${db.password}@${db.uri}:${db.port}/drawdojo?authSource=admin`;
   try {
     console.log(db);
@@ -32,53 +32,53 @@ const connectDB = async () => {
   } catch (err) {
     console.log("Failed to connect to MongoDB", err);
   }
-};
-connectDB();
 
-app.set("etag", false);
-app.use(nocache());
-app.use(express.json());
-app.use(morgan("tiny"));
-app.use(express.urlencoded());
+  app.set("etag", false);
+  app.use(nocache());
+  app.use(express.json());
+  app.use(morgan("tiny"));
+  app.use(express.urlencoded());
 
-app.use(
-  "/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(
-    swaggerDoc({
-      definition: {
-        openapi: "3.0.0",
-        info: {
-          title: "Drawdojo",
-          version: "0.0.1",
+  app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(
+      swaggerDoc({
+        definition: {
+          openapi: "3.0.0",
+          info: {
+            title: "Drawdojo",
+            version: "0.0.1",
+          },
         },
-      },
-      apis: ["./src/controller/**/*.ts", "./src/schemas/**/*.ts"],
-      servers: [
-        {
-          url: "https://api.operce.net/",
-          description: "Main server",
-        },
-      ],
+        apis: ["./src/controller/**/*.ts", "./src/schemas/**/*.ts"],
+        servers: [
+          {
+            url: "https://api.operce.net/",
+            description: "Main server",
+          },
+        ],
+      })
+    )
+  );
+
+  app.use(
+    eJwt({
+      secret: process.env.SEED as string,
+      algorithms: ["HS256"],
+    }).unless({
+      path: ["/auth/login", "/auth/register", "/auth/refresh", "/docs", "/"],
     })
-  )
-);
+  );
 
-app.use(
-  eJwt({
-    secret: process.env.SEED as string,
-    algorithms: ["HS256"],
-  }).unless({
-    path: ["/auth/login", "/auth/register", "/auth/refresh", "/docs", "/"],
-  })
-);
+  app.get("/", index);
+  app.post("/auth/login", login);
 
-app.get("/", index);
-app.post("/auth/login", login);
-
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`listening on port ${port}`);
-});
+  app.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log(`listening on port ${port}`);
+  });
+};
+main();
 
 export default app;
