@@ -33,10 +33,8 @@
     "paths": {
       "@controller": ["controller/index"],
       "@controller/*": ["controller/*"],
-      "@auth/": ["controller/auth/index"],
+      "@auth": ["controller/auth/index"],
       "@build/*": ["build/*"],
-      "@services/*": ["services/*"],
-      "@tsoa/*": ["tsoa/*"],
       "@index": ["index"],
       "@models/*": ["models/*"],
       "@schemas/*": ["schemas/*"]
