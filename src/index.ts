@@ -10,6 +10,8 @@ import eJwt from "express-jwt";
 
 import mongoose from "mongoose";
 
+import { login } from "@auth";
+
 const app: Application = express();
 const port = process.env.PORT;
 
@@ -75,6 +77,7 @@ app.use(
 );
 
 app.get("/", index);
+app.post("/auth/login", login);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
