@@ -24,14 +24,14 @@ const db: { [key: string]: string } = {
 
 const main = async () => {
   const uri = `mongodb://${db.username}:${db.password}@${db.uri}:${db.port}/drawdojo?authSource=admin`;
-  try {
-    console.log(db);
-    await mongoose.connect(uri);
-
-    console.log("Connected to mongoDB.");
-  } catch (err) {
-    console.log("Failed to connect to MongoDB", err);
-  }
+  await mongoose.connect(uri).then(
+    () => {
+      console.log("Connected to mongo.");
+    },
+    (err) => {
+      throw err;
+    }
+  );
 
   app.set("etag", false);
   app.use(nocache());
